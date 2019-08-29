@@ -1,0 +1,7 @@
+# FabMUSCLE Exec Template for the Muscle Manager: 
+cd $job_results
+$run_prefix
+
+/usr/bin/env > env.log
+# $ymmsl is the name of the ymmsl file you wish to run.
+muscle_manager $ymmsl
