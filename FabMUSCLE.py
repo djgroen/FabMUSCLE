@@ -15,6 +15,12 @@ add_local_paths("FabMUSCLE")
 def install_muscle():
     local("pip3 install muscle3")
 
+def muscle_unified(config,**args):
+    update_environment(args)
+    with_config(config)
+    execute(put_configs,config)
+    job(dict(script='muscle_unified', wall_time='0:15:0', memory='2G'),args)
+
 ### Old FabDummy code
 
 @task
