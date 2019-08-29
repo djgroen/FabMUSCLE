@@ -1,7 +1,7 @@
-# FabMUSCLE Exec Template for the Muscle Manager: 
+# FabMUSCLE Exec Template for MUSCLE3 all-in-one scripts: 
 cd $job_results
 $run_prefix
 
 /usr/bin/env > env.log
-# $ymmsl is the name of the ymmsl file you wish to run.
+# $$muscle_script is the name of the muscle script you wish to run.
 python3 $muscle_script 

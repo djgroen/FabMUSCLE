@@ -13,10 +13,12 @@ add_local_paths("FabMUSCLE")
 
 @task
 def install_muscle():
-    local("pip3 install muscle3")
+    run("pip3 install muscle3")
 
-def muscle_unified(config,**args):
+@task
+def muscle_unified(config, muscle_script="main.py", **args):
     update_environment(args)
+    update_environment({"muscle_script":muscle_script})
     with_config(config)
     execute(put_configs,config)
     job(dict(script='muscle_unified', wall_time='0:15:0', memory='2G'),args)
