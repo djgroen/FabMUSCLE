@@ -1,0 +1,7 @@
+# FabMUSCLE Exec Template for the Muscle Models: 
+cd $job_results
+$run_prefix
+
+/usr/bin/env > env.log
+# $$muscle_model_script is the name of the model script you wish to run.
+python3 $muscle_model_script --muscle-instance=$muscle_instance_name
