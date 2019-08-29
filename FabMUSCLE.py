@@ -8,7 +8,14 @@
 from base.fab import *
 
 # Add local script, blackbox and template path.
-add_local_paths("FabDummy")
+add_local_paths("FabMUSCLE")
+
+
+@task
+def install_muscle():
+    local("pip3 install muscle3")
+
+### Old FabDummy code
 
 @task
 def dummy(config,**args):
