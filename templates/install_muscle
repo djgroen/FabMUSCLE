@@ -1,0 +1,7 @@
+# FabMUSCLE template for MUSCLE3 installation
+cd $job_results
+$run_prefix
+
+/usr/bin/env > env.log
+
+pip3 install --user muscle3

@@ -1,0 +1,14 @@
+cd $job_results
+$run_prefix
+
+/usr/bin/env > env.log
+
+if [ $label == "muscle_manager" ]; then
+    # FabMUSCLE Exec Template for the Muscle Manager: 
+    # $$ymmsl_name is the name of the ymmsl file you wish to run.
+    ~/.local/bin/muscle_manager $ymmsl_name
+else
+    # FabMUSCLE Exec Template for the Muscle Models: 
+    # $$muscle_model_script is the name of the model script you wish to run.
+    python3 $muscle_model_script --muscle-instance=$label
+fi

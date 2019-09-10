@@ -1,0 +1,5 @@
+This is a simple placeholder directory to facilitate the installation of MUSCLE3 on supercomputer worker nodes.
+
+Use `fabsim <machine> install_muscle:install_muscle` to install MUSCLE3 on a remote machine.
+
+(You can use `pip3 install muscle3` to install it locally)

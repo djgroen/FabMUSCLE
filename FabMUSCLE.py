@@ -13,8 +13,11 @@ add_local_paths("FabMUSCLE")
 
 
 @task
-def install_muscle():
-    run("pip3 install muscle3")
+def install_muscle(config, **args):
+    update_environment(args)
+    with_config("install_muscle")
+    execute(put_configs,config)
+    job(dict(script='install_muscle', wall_time='0:15:0', memory='2G'))
 
 
 @task
@@ -27,7 +30,46 @@ def muscle_unified(config, muscle_script="main.py", **args):
 
 
 @task
+def make_muscle_ensemble(config, ymmsl_name, **args):
+    """
+    Creates a concurrently running MUSCLE ensemble application using a 
+    variation of run_ensemble.
+    """
+    with_config(config)
+    local("rm -rf {}/SWEEP".format(env.job_config_path_local))
+
+    # Make MUSCLE Manager directory.
+    local("mkdir -p {}/SWEEP/muscle_manager".format(env.job_config_path_local))
+    local("cp {}/{} {}/SWEEP/muscle_manager/".format(env.job_config_path_local, ymmsl_name, env.job_config_path_local))
+
+    with open("{}/{}".format(env.job_config_path_local, ymmsl_name), 'r') as f:
+        config = ymmsl.load(f)
+
+    # Make directories for MUSCLE submodel instances.
+    for ce in config.model.compute_elements:
+
+        print(ce.name, ce.implementation)
+        local("mkdir {}/SWEEP/{}".format(env.job_config_path_local, ce.name))
+        local("cp {}/{}.py {}/SWEEP/{}/model.py".format(env.job_config_path_local, ce.implementation, env.job_config_path_local, ce.name))
+
+
+@task
 def run_muscle_dist(config, ymmsl_name="main.ymmsl", **args):
+    """
+    Run a MUSCLE application as a FabSim ensemble.
+    """
+    make_muscle_ensemble(config, ymmsl_name, **args)
+
+    path_to_config = find_config_file_path(config)
+    sweep_dir = path_to_config + "/SWEEP"
+    env.script = 'muscle_distributed'
+    update_environment({"ymmsl_name":ymmsl_name, "muscle_model_script":"model.py", "exec_first":"muscle_manager"})
+
+    run_ensemble(config, sweep_dir, **args)
+   
+
+@task
+def run_muscle_dist_local(config, ymmsl_name="main.ymmsl", **args):
 
     scripts = ["muscle_manager {}".format(ymmsl_name)]
 
@@ -48,6 +90,7 @@ def run_muscle_dist(config, ymmsl_name="main.ymmsl", **args):
     exec_string += " wait"
     print(exec_string)
     local(exec_string)
+
 
 ### Old FabDummy code
 
