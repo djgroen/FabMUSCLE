@@ -6,6 +6,7 @@
 # This file contains FabSim definitions specific to FabDummy.
 
 from base.fab import *
+import ymmsl  # Required to process ymmsl files (comes with MUSCLE3).
 
 # Add local script, blackbox and template path.
 add_local_paths("FabMUSCLE")
@@ -15,6 +16,7 @@ add_local_paths("FabMUSCLE")
 def install_muscle():
     run("pip3 install muscle3")
 
+
 @task
 def muscle_unified(config, muscle_script="main.py", **args):
     update_environment(args)
@@ -22,6 +24,30 @@ def muscle_unified(config, muscle_script="main.py", **args):
     with_config(config)
     execute(put_configs,config)
     job(dict(script='muscle_unified', wall_time='0:15:0', memory='2G'),args)
+
+
+@task
+def run_muscle_dist(config, ymmsl_name="main.ymmsl", **args):
+
+    scripts = ["muscle_manager {}".format(ymmsl_name)]
+
+    with_config(config)
+
+    with open("{}/{}".format(env.job_config_path_local, ymmsl_name), 'r') as f:
+        config = ymmsl.load(f)
+
+    for ce in config.model.compute_elements:
+        print(ce.name, ce.implementation)
+
+        print("python3 ./{}.py --muscle-instance={}".format(ce.implementation, ce.name))
+        scripts.append("python3 ./{}.py --muscle-instance={}".format(ce.implementation, ce.name))
+
+    exec_string = "cd {} ; ".format(env.job_config_path_local)
+    for s in scripts:
+        exec_string += "{} & ".format(s)
+    exec_string += " wait"
+    print(exec_string)
+    local(exec_string)
 
 ### Old FabDummy code
 
