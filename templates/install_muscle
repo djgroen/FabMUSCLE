@@ -4,4 +4,6 @@ $run_prefix
 
 /usr/bin/env > env.log
 
+python3 -V
+
 pip3 install --user muscle3

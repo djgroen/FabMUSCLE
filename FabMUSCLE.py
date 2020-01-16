@@ -13,13 +13,13 @@ add_local_paths("FabMUSCLE")
 
 
 @task
-def install_muscle(config, **args):
+def install_muscle(**args):
     """
     Install MUSCLE3 on any machine.
     """
     update_environment(args)
     with_config("install_muscle")
-    execute(put_configs,config)
+    execute(put_configs, "install_muscle")
     job(dict(script='install_muscle', wall_time='0:15:0', memory='2G'))
 
 
